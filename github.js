@@ -47,6 +47,8 @@ module.exports = function(config) {
             'User-Agent': userAgent
          }
       }, function (error, response, body) {
+          if( error )
+            throw new Error(error);
 
          var issues = (tmpIssues ? tmpIssues : []).concat(JSON.parse(body));
 
@@ -81,13 +83,15 @@ module.exports = function(config) {
             'User-Agent': userAgent
          }
       }, function (error, response, body) {
+          if( error )
+            throw new Error(error);
          memo.milestones.value  = JSON.parse(body);
          memo.milestones.status = "fresh";
          cb(null, memo.milestones.value, memo.issues.status);
       });
 
    }
-   
+
    function refresh (cb) {
       for (var key in memo) {
          if (memo.hasOwnProperty(key)) {
