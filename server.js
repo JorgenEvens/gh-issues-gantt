@@ -6,6 +6,25 @@ var app = express(),
 
 var github = require('./github')(config);
 
+app.get('/config.js', function( req, res ) {
+    var config = {
+
+       repo: process.env.GITHUB_REPO,
+
+       weekDaysOff: [0,6],
+
+       colorByDev: process.env.COLORS ? JSON.parse(process.env.COLORS) : {},
+
+       holidays: {},
+
+       excludedMilestones: [ ],
+
+       defaultDuration: 1 // in days
+
+    };
+    res.send('var config = ' + JSON.stringify(config));
+});
+
 app.use(express["static"](__dirname + '/public'));
 
 app.use(express.bodyParser());
