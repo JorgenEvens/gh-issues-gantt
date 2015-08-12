@@ -1,4 +1,5 @@
 var express = require('express');
+var basicAuth = require('basic-auth');
 
 var app = express(),
     config = require('./config.js');
@@ -8,6 +9,23 @@ var github = require('./github')(config);
 app.use(express["static"](__dirname + '/public'));
 
 app.use(express.bodyParser());
+
+app.use(function( req, res, next ) {
+    function unauthorized() {
+        res.set('WWW-Authenticate', 'Basic realm=Authorization Required');
+        return res.send(401);
+      };
+
+     var user = basicAuth(req);
+
+     if( !user || !user.name || !user.pass )
+        return unauthorized();
+
+    if( user.pass != process.env['USER_' + user.name] )
+        return unauthorized();
+
+    return next();
+});
 
 app.get('/', function(req, res){
    res.sendfile(__dirname + '/public/index.html');
