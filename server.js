@@ -70,5 +70,5 @@ app.post('/update_ms_due_on', function(req, res) {
 });
 
 
-app.listen(config.port);
+app.listen(process.env.PORT || config.port);
 console.log('Listening on port '+config.port);
